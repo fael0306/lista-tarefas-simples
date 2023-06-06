@@ -1,1 +1,3 @@
-# Lista-de-tarefas-simples
+# Lista de tarefas
+
+Uma simples lista de tarefas.
