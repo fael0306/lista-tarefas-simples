@@ -1,13 +1,16 @@
 import liblistadetarefas
 
 listadetarefas = []
-op = 0
 
-print("Escolha a opção desejada:")
+while True:
+    print("\nEscolha a opção desejada:")
+    print("1 - Adicionar")
+    print("2 - Remover")
+    print("3 - Mostrar")
+    print("4 - Encerrar")
 
-while op != 4:
     try:
-        op = int(input("\n\n1 - Adicionar\n2 - Remover\n3 - Mostrar\n4 - Encerrar\n"))
+        op = int(input())
     except ValueError:
         print("Digite um número válido.")
         continue
@@ -17,21 +20,14 @@ while op != 4:
         liblistadetarefas.adicionar(listadetarefas, tarefa)
     elif op == 2:
         try:
-            tarefa = int(input("\nTarefa que deseja remover: "))
+            indice = int(input("\nÍndice da tarefa que deseja remover: ")) - 1
         except ValueError:
             print("Digite um número válido.")
             continue
-
-        if 0 <= tarefa-1 < len(listadetarefas):
-            liblistadetarefas.remover(listadetarefas, tarefa)
-        else:
-            print("Esta tarefa não existe.")
+        liblistadetarefas.remover(listadetarefas, indice)
     elif op == 3:
-        if len(listadetarefas) > 0:
-            print("\nSegue a lista:\n")
-            liblistadetarefas.mostrar(listadetarefas)
-        else:
-            print("\nA lista está vazia.")
+        liblistadetarefas.mostrar(listadetarefas)
+    elif op == 4:
+        break
     else:
-        if op != 4:
-            print("Digite uma opção válida.")
+        print("Digite uma opção válida.")
