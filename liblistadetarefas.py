@@ -20,3 +20,6 @@ def removerconcluidos(lista):
         for k in lista[n]:
             if k=="✓":
                 remover(lista,n)
+
+def editar(lista,item,tarefaeditada):
+    lista[item] = tarefaeditada

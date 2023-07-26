@@ -9,7 +9,8 @@ while True:
     print("3 - Mostrar")
     print("4 - Marcar como concluído")
     print("5 - Remover concluídos")
-    print("6 - Encerrar")
+    print("6 - Editar tarefa")
+    print("7 - Encerrar")
 
     try:
         op = int(input())
@@ -39,6 +40,14 @@ while True:
     elif op == 5:
         liblistadetarefas.removerconcluidos(listadetarefas)
     elif op == 6:
+        try:
+            indice = int(input("\nÍndice da tarefa que deseja editar: ")) - 1
+            novatarefa = input("\nDigite a tarefa conforme deseja: ")
+        except ValueError:
+            print("Digite um número válido.")
+            continue
+        liblistadetarefas.editar(listadetarefas,indice,novatarefa)
+    elif op == 7:
         break
     else:
         print("Digite uma opção válida.")
