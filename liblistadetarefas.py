@@ -26,3 +26,11 @@ def editar(lista,item,tarefaeditada):
 
 def ordenar(lista):
     lista.sort(key=str.lower)
+
+def qtd(lista):
+    if len(lista)>1:
+        return print("\nA lista possui",len(lista),"tarefas.")
+    elif len(lista)==1:
+        return print("\nA lista possui",len(lista),"tarefa.")
+    else:
+        return print("\nA lista está vazia.")

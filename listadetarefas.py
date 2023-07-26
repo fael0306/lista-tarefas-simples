@@ -11,7 +11,8 @@ while True:
     print("5 - Remover concluídos")
     print("6 - Editar")
     print("7 - Ordenar alfabeticamente")
-    print("8 - Encerrar")
+    print("8 - Contar tarefas")
+    print("9 - Encerrar")
 
     try:
         op = int(input())
@@ -50,7 +51,9 @@ while True:
         liblistadetarefas.editar(listadetarefas,indice,novatarefa)
     elif op == 7:
         liblistadetarefas.ordenar(listadetarefas)
-    elif op == 8:    
+    elif op == 8:
+        liblistadetarefas.qtd(listadetarefas)
+    elif op == 9:    
         break
     else:
         print("\nDigite uma opção válida.")
