@@ -16,7 +16,7 @@ def concluir(lista,item):
     lista[item] = lista[item]+" ✓"
 
 def removerconcluidos(lista):
-    for n in range(len(lista)):
+    for n in range(0,len(lista)):
         for k in lista[n]:
             if k=="✓":
                 remover(lista,n)
@@ -34,3 +34,22 @@ def qtd(lista):
         return print("\nA lista possui",len(lista),"tarefa.")
     else:
         return print("\nA lista está vazia.")
+
+def tconcluidas(lista):
+    concluidas = []
+    for n in range(0,len(lista)):
+        for k in lista[n]:
+            if k=="✓":
+                concluidas.append(lista[n])
+    mostrar(concluidas)
+
+def tpendentes(lista):
+    pendentes = []
+    a = 0
+    for n in range(0,len(lista)):
+        for k in lista[n]:
+            if k=="✓":
+                a = 1
+        if a==0:
+            pendentes.append(lista[n])
+    mostrar(pendentes)
