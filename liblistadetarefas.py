@@ -8,8 +8,8 @@ def mostrar(lista):
     if len(lista)==0:
         print("\nA lista está vazia.")
     else:
+        print("")
         for n in range(len(lista)):
-            print("\n")
             print(n+1," - ",lista[n])
 
 def concluir(lista,item):
@@ -23,3 +23,6 @@ def removerconcluidos(lista):
 
 def editar(lista,item,tarefaeditada):
     lista[item] = tarefaeditada
+
+def ordenar(lista):
+    lista.sort(key=str.lower)
