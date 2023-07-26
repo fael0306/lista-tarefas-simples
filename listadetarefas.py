@@ -6,7 +6,7 @@ while True:
     print("\nEscolha a opção desejada:")
     print("1 - Adicionar")
     print("2 - Remover")
-    print("3 - Mostrar")
+    print("3 - Exibir")
     print("4 - Marcar como concluído")
     print("5 - Remover concluídos")
     print("6 - Editar")
