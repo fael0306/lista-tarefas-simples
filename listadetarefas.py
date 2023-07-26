@@ -9,7 +9,7 @@ while True:
     print("3 - Mostrar")
     print("4 - Marcar como concluído")
     print("5 - Remover concluídos")
-    print("6 - Editar tarefa")
+    print("6 - Editar")
     print("7 - Encerrar")
 
     try:
