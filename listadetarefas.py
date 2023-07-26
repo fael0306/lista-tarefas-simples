@@ -7,7 +7,9 @@ while True:
     print("1 - Adicionar")
     print("2 - Remover")
     print("3 - Mostrar")
-    print("4 - Encerrar")
+    print("4 - Marcar como concluído")
+    print("5 - Remover concluídos")
+    print("6 - Encerrar")
 
     try:
         op = int(input())
@@ -28,6 +30,15 @@ while True:
     elif op == 3:
         liblistadetarefas.mostrar(listadetarefas)
     elif op == 4:
+        try:
+            indice = int(input("\nÍndice da tarefa que deseja marcar como cuncluída: ")) - 1
+        except ValueError:
+            print("Digite um número válido.")
+            continue
+        liblistadetarefas.concluir(listadetarefas, indice)
+    elif op == 5:
+        liblistadetarefas.removerconcluidos(listadetarefas)
+    elif op == 6:
         break
     else:
         print("Digite uma opção válida.")
