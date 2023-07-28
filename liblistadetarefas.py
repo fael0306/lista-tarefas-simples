@@ -53,3 +53,19 @@ def tpendentes(lista):
         if a==0:
             pendentes.append(lista[n])
     mostrar(pendentes)
+
+def salvararq(lista):
+    with open("listadetarefas.txt", mode="w") as arquivo:
+        for k in lista:
+            arquivo.write(f"{k}\n")
+
+def carregararq(lista):
+    try:
+        with open("listadetarefas.txt", mode="r") as arquivo:
+            for k in arquivo:
+                tarefa = k.strip()
+                adicionar(lista, tarefa)
+    except FileNotFoundError as e:
+        print(f"Erro ao carregar arquivo: {e}\nFavor, salvar as tarefas antes de solicitar o carregamento.\n")
+    except Exception as e:
+        print(f"Ocorreu um erro inesperado: {e}\n")

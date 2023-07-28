@@ -14,7 +14,9 @@ while True:
     print("8 - Contar tarefas")
     print("9 - Exibir tarefas concluídas")
     print("10 - Exibir tarefas pendentes")
-    print("11 - Encerrar")
+    print("11 - Salvar tarefas")
+    print("12 - Carregar tarefas")
+    print("13 - Encerrar")
 
     try:
         op = int(input())
@@ -60,6 +62,10 @@ while True:
     elif op == 10:    
         liblistadetarefas.tpendentes(listadetarefas)
     elif op == 11:
+        liblistadetarefas.salvararq(listadetarefas)
+    elif op == 12:
+        liblistadetarefas.carregararq(listadetarefas)
+    elif op == 13:
         break
     else:
         print("\nDigite uma opção válida.")
