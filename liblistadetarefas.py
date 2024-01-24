@@ -4,18 +4,24 @@ def adicionar(lista, item):
     lista.append(item)
 
 def remover(lista, item):
-    lista.pop(item-1)
+    try:
+        lista.pop(item-1)
+    except IndexError:
+        print("Este número de tarefa não existe.")
 
 def mostrar(lista):
     if len(lista)==0:
-        print("\nA lista está vazia.")
+        print("\nNão há tarefas.")
     else:
         print("")
         for n in range(len(lista)):
             print(n+1," - ",lista[n])
 
 def concluir(lista,item):
-    lista[item] = lista[item]+" ✓"
+    try:
+        lista[item] = lista[item]+" ✓"
+    except IndexError:
+        print("Este número de tarefa não existe.")
 
 def removerconcluidos(lista):
     for n in range(0,len(lista)):
@@ -24,7 +30,10 @@ def removerconcluidos(lista):
                 remover(lista,n)
 
 def editar(lista,item,tarefaeditada):
-    lista[item] = tarefaeditada
+    try:
+        lista[item] = tarefaeditada
+    except IndexError:
+        print("Este número de tarefa não existe.")
 
 def ordenar(lista):
     lista.sort(key=str.lower)
@@ -35,7 +44,7 @@ def qtd(lista):
     elif len(lista)==1:
         return print("\nA lista possui",len(lista),"tarefa.")
     else:
-        return print("\nA lista está vazia.")
+        return print("\nNão há tarefas.")
 
 def tconcluidas(lista):
     concluidas = []
@@ -60,6 +69,7 @@ def salvararq(lista):
     with open("listadetarefas.txt", mode="w") as arquivo:
         for k in lista:
             arquivo.write(f"{k}\n")
+    print("Arquivo salvo com sucesso.")
 
 def carregararq(lista):
     try:
@@ -67,6 +77,7 @@ def carregararq(lista):
             for k in arquivo:
                 tarefa = k.strip()
                 adicionar(lista, tarefa)
+        print("\nTarefas carregadas com sucesso.")
     except FileNotFoundError as e:
         print(f"Erro ao carregar arquivo: {e}\nFavor, salvar as tarefas antes de solicitar o carregamento.\n")
     except Exception as e:
