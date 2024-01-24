@@ -1,5 +1,4 @@
 import liblistadetarefas
-from datetime import datetime
 
 listadetarefas = []
 

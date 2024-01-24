@@ -1,5 +1,3 @@
-from datetime import date, timedelta, datetime
-
 def adicionar(lista, item):
     lista.append(item)
 
