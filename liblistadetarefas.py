@@ -1,4 +1,4 @@
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 
 def adicionar(lista, item):
     lista.append(item)
@@ -82,41 +82,3 @@ def carregararq(lista):
         print(f"Erro ao carregar arquivo: {e}\nFavor, salvar as tarefas antes de solicitar o carregamento.\n")
     except Exception as e:
         print(f"Ocorreu um erro inesperado: {e}\n")
-
-def addvencimento(lista, item, data):
-    if item >= 1 and item <= len(lista):
-        lista[item - 1]['data_vencimento'] = data
-        print("Data de vencimento adicionada com sucesso.")
-    else:
-        print("Número de tarefa inválido.")
-
-def agruparprazo(lista):
-    hoje = date.today()
-    grupos = {
-        'Sem prazo': [],
-        'Menos de uma semana': [],
-        'Menos de duas semanas': [],
-        'Mais de duas semanas': [],
-        'Mais de um mês': []
-    }
-
-    for tarefa in lista:
-        if 'data_vencimento' in tarefa:
-            data_vencimento = tarefa['data_vencimento']
-            if data_vencimento <= hoje:
-                grupos['Sem prazo'].append(tarefa)
-            elif data_vencimento <= hoje + timedelta(days=7):
-                grupos['Menos de uma semana'].append(tarefa)
-            elif data_vencimento <= hoje + timedelta(days=14):
-                grupos['Menos de duas semanas'].append(tarefa)
-            elif data_vencimento <= hoje + timedelta(days=30):
-                grupos['Mais de duas semanas'].append(tarefa)
-            else:
-                grupos['Mais de um mês'].append(tarefa)
-
-    for prazo, tarefas in grupos.items():
-        print(f"Tarefas com {prazo}:")
-        if not tarefas:
-            print("Nenhuma tarefa neste grupo.")
-        for tarefa in tarefas:
-            print(f"{tarefa['tarefa']} - Prazo: {tarefa['data_vencimento']}")

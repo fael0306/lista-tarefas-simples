@@ -1,5 +1,5 @@
 import liblistadetarefas
-import datetime
+from datetime import datetime
 
 listadetarefas = []
 
@@ -17,9 +17,7 @@ while True:
     print("10 - Exibir tarefas pendentes")
     print("11 - Salvar tarefas")
     print("12 - Carregar tarefas")
-    print("13 - Adicionar data de vencimento")
-    print("14 - Mostrar tarefas por data de vencimento")
-    print("15 - Encerrar")
+    print("13 - Encerrar")
 
     try:
         op = int(input())
@@ -69,19 +67,6 @@ while True:
     elif op == 12:
         liblistadetarefas.carregararq(listadetarefas)
     elif op == 13:
-        try:
-            indice = int(input("\nÍndice da tarefa que deseja adicionar vencimento: ")) - 1
-            dia = int(input("\nDigite o dia: "))
-            mes = int(input("\nDigite o mês: "))
-            ano = int(input("\nDigite o ano: "))
-            data = datetime(ano,mes,dia)
-        except ValueError:
-            print("Digite valores válidos.")
-            continue
-        liblistadetarefas.addvencimento(listadetarefas,indice,data)
-    elif op == 14:
-        liblistadetarefas.agruparprazo(listadetarefas)
-    elif op == 15:
         break
     else:
         print("\nDigite uma opção válida.")
