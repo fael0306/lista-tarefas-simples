@@ -72,6 +72,8 @@ while True:
                 liblistadetarefas.concluir(listadetarefas, indice)
             except ValueError:
                 print("Digite um número válido.")
+        elif subop==5:
+            liblistadetarefas.removerconcluidos(listadetarefas)
 
     elif op == 2:
         menu_exibir()

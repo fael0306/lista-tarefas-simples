@@ -21,10 +21,7 @@ def concluir(lista,item):
     lista[item]["concluida"] = True
 
 def removerconcluidos(lista):
-    for n in range(0,len(lista)):
-        for k in lista[n]:
-            if k=="✓":
-                remover(lista,n)
+    lista[:] = [tarefa for tarefa in lista if not tarefa["concluida"]]
 
 def editar(lista,item,tarefaeditada):
     try:
@@ -44,22 +41,11 @@ def qtd(lista):
         return print("\nNão há tarefas.")
 
 def tconcluidas(lista):
-    concluidas = []
-    for n in range(0,len(lista)):
-        for k in lista[n]:
-            if k=="✓":
-                concluidas.append(lista[n])
+    concluidas = [tarefa for tarefa in lista if tarefa["concluida"]]
     mostrar(concluidas)
 
 def tpendentes(lista):
-    pendentes = []
-    a = 0
-    for n in range(0,len(lista)):
-        for k in lista[n]:
-            if k=="✓":
-                a = 1
-        if a==0:
-            pendentes.append(lista[n])
+    pendentes = [tarefa for tarefa in lista if not tarefa["concluida"]]
     mostrar(pendentes)
 
 def salvararq(lista):
