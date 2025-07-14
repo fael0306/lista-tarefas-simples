@@ -50,7 +50,8 @@ while True:
 
         if subop == 1:
             tarefa = input("Tarefa que deseja adicionar: ")
-            liblistadetarefas.adicionar(listadetarefas, tarefa)
+            vencimento = input("Data de vencimento (AAAA-MM-DD): ")
+            liblistadetarefas.adicionar(listadetarefas, tarefa, vencimento)
         elif subop == 2:
             try:
                 indice = int(input("Índice da tarefa que deseja remover: ")) - 1
@@ -60,8 +61,9 @@ while True:
         elif subop == 3:
             try:
                 indice = int(input("Índice da tarefa que deseja editar: ")) - 1
-                novatarefa = input("Nova descrição da tarefa: ")
-                liblistadetarefas.editar(listadetarefas, indice, novatarefa)
+                novadescricao = input("Nova descrição da tarefa: ")
+                novavencimento = input("Nova data de vencimento (AAAA-MM-DD): ")
+                liblistadetarefas.editar(listadetarefas, indice, novadescricao, novavencimento)
             except ValueError:
                 print("Digite um número válido.")
         elif subop == 4:
@@ -70,8 +72,6 @@ while True:
                 liblistadetarefas.concluir(listadetarefas, indice)
             except ValueError:
                 print("Digite um número válido.")
-        elif subop == 5:
-            liblistadetarefas.removerconcluidos(listadetarefas)
 
     elif op == 2:
         menu_exibir()

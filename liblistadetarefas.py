@@ -1,5 +1,10 @@
-def adicionar(lista, item):
-    lista.append(item)
+def adicionar(lista, descricao, vencimento):
+    tarefa = {
+        "descricao": descricao,
+        "vencimento": vencimento,
+        "concluida": False
+    }
+    lista.append(tarefa)
 
 def remover(lista, item):
     try:
@@ -8,12 +13,9 @@ def remover(lista, item):
         print("Este número de tarefa não existe.")
 
 def mostrar(lista):
-    if len(lista)==0:
-        print("\nNão há tarefas.")
-    else:
-        print("")
-        for n in range(len(lista)):
-            print(n+1," - ",lista[n])
+    for i, t in enumerate(lista, start=1):
+        status = "✓" if t["concluida"] else "✗"
+        print(f"{i} - {t['descricao']} | Vencimento: {t['vencimento']} | Concluída: {status}")
 
 def concluir(lista,item):
     try:
@@ -80,3 +82,19 @@ def carregararq(lista):
         print(f"Erro ao carregar arquivo: {e}\nFavor, salvar as tarefas antes de solicitar o carregamento.\n")
     except Exception as e:
         print(f"Ocorreu um erro inesperado: {e}\n")
+
+from datetime import datetime, timedelta
+
+def tarefas_vencidas(lista):
+    hoje = datetime.now().date()
+    vencidas = [t for t in lista if not t["concluida"] and datetime.strptime(t["vencimento"], "%Y-%m-%d").date() < hoje]
+    mostrar(vencidas)
+
+def tarefas_proximas(lista, dias=3):
+    hoje = datetime.now().date()
+    proximas = []
+    for t in lista:
+        venc = datetime.strptime(t["vencimento"], "%Y-%m-%d").date()
+        if not t["concluida"] and hoje <= venc <= hoje + timedelta(days=dias):
+            proximas.append(t)
+    mostrar(proximas)
