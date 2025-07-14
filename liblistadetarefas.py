@@ -18,10 +18,7 @@ def mostrar(lista):
         print(f"{i} - {t['descricao']} | Vencimento: {t['vencimento']} | Concluída: {status}")
 
 def concluir(lista,item):
-    try:
-        lista[item] = lista[item]+" ✓"
-    except IndexError:
-        print("Este número de tarefa não existe.")
+    lista[item]["concluida"] = True
 
 def removerconcluidos(lista):
     for n in range(0,len(lista)):
