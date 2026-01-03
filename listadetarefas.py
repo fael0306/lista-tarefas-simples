@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+import json
 
 # -------------------------------
 # Funções de manipulação de tarefas
@@ -68,29 +69,24 @@ def tpendentes(lista):
     pendentes = [t for t in lista if not t["concluida"]]
     mostrar(pendentes)
 
-def salvararq(lista, nome="listadetarefas.txt"):
+def salvararq(lista, nome="listadetarefas.json"):
     try:
-        with open(nome, mode="w") as arquivo:
-            for t in lista:
-                arquivo.write(f"{t['descricao']}|{t['vencimento']}|{t['concluida']}\n")
-        print("Arquivo salvo com sucesso.")
+        with open(nome, mode="w", encoding="utf-8") as arquivo:
+            json.dump(lista, arquivo, ensure_ascii=False, indent=4)
+        print("Arquivo JSON salvo com sucesso.")
     except Exception as e:
         print(f"Erro ao salvar arquivo: {e}")
 
-def carregararq(lista, nome="listadetarefas.txt"):
+def carregararq(lista, nome="listadetarefas.json"):
     try:
-        with open(nome, mode="r") as arquivo:
+        with open(nome, mode="r", encoding="utf-8") as arquivo:
             lista.clear()
-            for linha in arquivo:
-                descricao, vencimento, concluida = linha.strip().split("|")
-                lista.append({
-                    "descricao": descricao,
-                    "vencimento": vencimento,
-                    "concluida": concluida == "True"
-                })
-        print("\nTarefas carregadas com sucesso.")
+            lista.extend(json.load(arquivo))
+        print("\nTarefas carregadas com sucesso (JSON).")
     except FileNotFoundError:
-        print("Arquivo não encontrado. Salve as tarefas antes de carregar.")
+        print("Arquivo JSON não encontrado. Salve as tarefas antes de carregar.")
+    except json.JSONDecodeError:
+        print("Erro: arquivo JSON corrompido ou inválido.")
     except Exception as e:
         print(f"Ocorreu um erro inesperado: {e}")
 
