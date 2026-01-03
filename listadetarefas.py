@@ -1,9 +1,37 @@
 from datetime import datetime, timedelta
 import json
+import copy
+
+historico_undo = []
+historico_redo = []
 
 # -------------------------------
 # Funções de manipulação de tarefas
 # -------------------------------
+
+def salvar_estado(lista):
+    historico_undo.append(copy.deepcopy(lista))
+    historico_redo.clear()
+
+def desfazer(lista):
+    if not historico_undo:
+        print("Nada para desfazer.")
+        return
+    historico_redo.append(copy.deepcopy(lista))
+    estado_anterior = historico_undo.pop()
+    lista.clear()
+    lista.extend(estado_anterior)
+    print("Última ação foi desfeita. Estado atual restaurado.")
+
+def refazer(lista):
+    if not historico_redo:
+        print("Nada para refazer.")
+        return
+    historico_undo.append(copy.deepcopy(lista))
+    estado_refeito = historico_redo.pop()
+    lista.clear()
+    lista.extend(estado_refeito)
+    print("Ação refeita.")
 
 def validar_data(data_str):
     try:
@@ -21,16 +49,20 @@ def solicitar_data():
             print("Data inválida. Tente novamente no formato AAAA-MM-DD.")
 
 def adicionar(lista, descricao, vencimento):
+    salvar_estado(lista)
     tarefa = {
         "descricao": descricao,
         "vencimento": vencimento,
         "concluida": False
     }
     lista.append(tarefa)
+    print(f"Tarefa '{descricao}' adicionada.")
 
 def remover(lista, indice):
     try:
+        salvar_estado(lista)
         lista.pop(indice)
+        print("Tarefa removida.")
     except IndexError:
         print("Este número de tarefa não existe.")
 
@@ -44,26 +76,36 @@ def mostrar(lista):
 
 def concluir(lista, indice):
     try:
+        salvar_estado(lista)
         lista[indice]["concluida"] = True
+        print("Tarefa concluída.")
     except IndexError:
         print("Este número de tarefa não existe.")
 
 def remover_concluidos(lista):
+    salvar_estado(lista)
     lista[:] = [tarefa for tarefa in lista if not tarefa["concluida"]]
+    print("Tarefas concluídas removidas.")
 
 def editar(lista, indice, descricao, vencimento):
     try:
+        salvar_estado(lista)
         lista[indice]["descricao"] = descricao
         lista[indice]["vencimento"] = vencimento
+        print("Tarefa editada.")
     except IndexError:
         print("Este número de tarefa não existe.")
 
 def ordenar_por_nome(lista):
+    salvar_estado(lista)
     lista.sort(key=lambda t: t["descricao"].lower())
+    print("Tarefas ordenadas por nome.")
 
 def ordenar_por_data(lista):
     try:
+        salvar_estado(lista)
         lista.sort(key=lambda t: datetime.strptime(t["vencimento"], "%Y-%m-%d"))
+        print("Tarefas ordenadas por data.")
     except ValueError:
         print("Erro: formato de data inválido em alguma tarefa. Use AAAA-MM-DD.")
 
@@ -94,6 +136,7 @@ def salvararq(lista, nome="listadetarefas.json"):
 
 def carregararq(lista, nome="listadetarefas.json"):
     try:
+        salvar_estado(lista)
         with open(nome, mode="r", encoding="utf-8") as arquivo:
             lista.clear()
             lista.extend(json.load(arquivo))
@@ -128,7 +171,9 @@ def menu_principal():
     print("2 - Exibir Tarefas")
     print("3 - Organizar Tarefas")
     print("4 - Arquivo")
-    print("5 - Encerrar")
+    print("5 - Desfazer")
+    print("6 - Refazer")
+    print("7 - Encerrar")
 
 def menu_gerenciar():
     print("\nGerenciar Tarefas:")
@@ -162,10 +207,6 @@ def menu_arquivo():
 # -------------------------------
 
 def obter_opcao(mensagem, max_op):
-    """
-    Solicita ao usuário uma opção numérica entre 1 e max_op.
-    Retorna o número escolhido ou None se inválido.
-    """
     try:
         op = int(input(mensagem))
         if 1 <= op <= max_op:
@@ -181,7 +222,7 @@ def main():
     lista = []
     while True:
         menu_principal()
-        op = obter_opcao("Escolha a opção desejada: ", 5)
+        op = obter_opcao("Escolha a opção desejada: ", 7)
         if op is None:
             continue
 
@@ -248,8 +289,11 @@ def main():
                 salvararq(lista)
             elif subop == 2:
                 carregararq(lista)
-
         elif op == 5:
+            desfazer(lista)
+        elif op == 6:
+            refazer(lista)
+        elif op == 7:
             print("Encerrando programa... Até logo!")
             break
 
