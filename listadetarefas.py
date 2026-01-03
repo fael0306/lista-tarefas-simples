@@ -146,22 +146,34 @@ def menu_arquivo():
 # Programa Principal
 # -------------------------------
 
+def obter_opcao(mensagem, max_op):
+    """
+    Solicita ao usuário uma opção numérica entre 1 e max_op.
+    Retorna o número escolhido ou None se inválido.
+    """
+    try:
+        op = int(input(mensagem))
+        if 1 <= op <= max_op:
+            return op
+        else:
+            print(f"Digite um número entre 1 e {max_op}.")
+            return None
+    except ValueError:
+        print("Digite um número válido.")
+        return None
+
 def main():
     lista = []
     while True:
         menu_principal()
-        try:
-            op = int(input("Escolha a opção desejada: "))
-        except ValueError:
-            print("Digite um número válido.")
+        op = obter_opcao("Escolha a opção desejada: ", 5)
+        if op is None:
             continue
 
         if op == 1:
             menu_gerenciar()
-            try:
-                subop = int(input("Escolha a opção: "))
-            except ValueError:
-                print("Digite um número válido.")
+            subop = obter_opcao("Escolha a opção: ", 5)
+            if subop is None:
                 continue
 
             if subop == 1:
@@ -169,36 +181,27 @@ def main():
                 vencimento = input("Data de vencimento (AAAA-MM-DD): ")
                 adicionar(lista, tarefa, vencimento)
             elif subop == 2:
-                try:
-                    indice = int(input("Índice da tarefa que deseja remover: ")) - 1
-                    remover(lista, indice)
-                except ValueError:
-                    print("Digite um número válido.")
+                indice = obter_opcao("Índice da tarefa que deseja remover: ", len(lista))
+                if indice:
+                    remover(lista, indice - 1)
             elif subop == 3:
-                try:
-                    indice = int(input("Índice da tarefa que deseja editar: ")) - 1
+                indice = obter_opcao("Índice da tarefa que deseja editar: ", len(lista))
+                if indice:
                     novadescricao = input("Nova descrição da tarefa: ")
                     novavencimento = input("Nova data de vencimento (AAAA-MM-DD): ")
-                    editar(lista, indice, novadescricao, novavencimento)
-                except ValueError:
-                    print("Digite um número válido.")
+                    editar(lista, indice - 1, novadescricao, novavencimento)
             elif subop == 4:
-                try:
-                    indice = int(input("Índice da tarefa que deseja concluir: ")) - 1
-                    concluir(lista, indice)
-                except ValueError:
-                    print("Digite um número válido.")
+                indice = obter_opcao("Índice da tarefa que deseja concluir: ", len(lista))
+                if indice:
+                    concluir(lista, indice - 1)
             elif subop == 5:
                 remover_concluidos(lista)
 
         elif op == 2:
             menu_exibir()
-            try:
-                subop = int(input("Escolha a opção: "))
-            except ValueError:
-                print("Digite um número válido.")
+            subop = obter_opcao("Escolha a opção: ", 6)
+            if subop is None:
                 continue
-
             if subop == 1:
                 mostrar(lista)
             elif subop == 2:
@@ -214,11 +217,7 @@ def main():
 
         elif op == 3:
             menu_organizar()
-            try:
-                subop = int(input("Escolha a opção: "))
-            except ValueError:
-                print("Digite um número válido.")
-                continue
+            subop = obter_opcao("Escolha a opção: ", 2)
             if subop == 1:
                 ordenar_por_nome(lista)
             elif subop == 2:
@@ -226,11 +225,7 @@ def main():
 
         elif op == 4:
             menu_arquivo()
-            try:
-                subop = int(input("Escolha a opção: "))
-            except ValueError:
-                print("Digite um número válido.")
-                continue
+            subop = obter_opcao("Escolha a opção: ", 2)
             if subop == 1:
                 salvararq(lista)
             elif subop == 2:
@@ -239,8 +234,6 @@ def main():
         elif op == 5:
             print("Encerrando programa... Até logo!")
             break
-        else:
-            print("Digite uma opção válida.")
 
 if __name__ == "__main__":
     main()
