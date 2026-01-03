@@ -5,6 +5,21 @@ import json
 # Funções de manipulação de tarefas
 # -------------------------------
 
+def validar_data(data_str):
+    try:
+        datetime.strptime(data_str, "%Y-%m-%d")
+        return True
+    except ValueError:
+        return False
+
+def solicitar_data():
+    while True:
+        data = input("Data de vencimento (AAAA-MM-DD): ")
+        if validar_data(data):
+            return data
+        else:
+            print("Data inválida. Tente novamente no formato AAAA-MM-DD.")
+
 def adicionar(lista, descricao, vencimento):
     tarefa = {
         "descricao": descricao,
@@ -178,18 +193,21 @@ def main():
 
             if subop == 1:
                 tarefa = input("Tarefa que deseja adicionar: ")
-                vencimento = input("Data de vencimento (AAAA-MM-DD): ")
+                vencimento = solicitar_data()
                 adicionar(lista, tarefa, vencimento)
             elif subop == 2:
                 indice = obter_opcao("Índice da tarefa que deseja remover: ", len(lista))
                 if indice:
                     remover(lista, indice - 1)
-            elif subop == 3:
+            elif subop == 3:  # Editar
                 indice = obter_opcao("Índice da tarefa que deseja editar: ", len(lista))
                 if indice:
                     novadescricao = input("Nova descrição da tarefa: ")
                     novavencimento = input("Nova data de vencimento (AAAA-MM-DD): ")
-                    editar(lista, indice - 1, novadescricao, novavencimento)
+                    if validar_data(novavencimento):
+                        editar(lista, indice - 1, novadescricao, novavencimento)
+                    else:
+                        print("Data inválida. Use o formato AAAA-MM-DD.")
             elif subop == 4:
                 indice = obter_opcao("Índice da tarefa que deseja concluir: ", len(lista))
                 if indice:
