@@ -9,9 +9,43 @@ historico_redo = []
 # Funções de manipulação de tarefas
 # -------------------------------
 
+
+def ordenar_por_categoria(lista):
+    salvar_estado(lista)
+    lista.sort(key=lambda t: t["categoria"].lower())
+    print("Tarefas ordenadas por categoria.")
+
+
+def filtrar_categoria_tag(lista, categoria, tag):
+    filtradas = [
+        t
+        for t in lista
+        if t["categoria"].lower() == categoria.lower()
+        and tag.lower() in [tg.lower() for tg in t["tags"]]
+    ]
+    mostrar(filtradas)
+
+
+def listar_categorias(lista):
+    categorias = sorted(set(t["categoria"] for t in lista if t["categoria"]))
+    print(
+        "Categorias existentes:",
+        ", ".join(categorias) if categorias else "Nenhuma categoria.",
+    )
+
+
+def listar_tags(lista):
+    todas_tags = set(tag for t in lista for tag in t["tags"])
+    print(
+        "Tags existentes:",
+        ", ".join(sorted(todas_tags)) if todas_tags else "Nenhuma tag.",
+    )
+
+
 def salvar_estado(lista):
     historico_undo.append(copy.deepcopy(lista))
     historico_redo.clear()
+
 
 def desfazer(lista):
     if not historico_undo:
@@ -23,6 +57,7 @@ def desfazer(lista):
     lista.extend(estado_anterior)
     print("Última ação foi desfeita. Estado atual restaurado.")
 
+
 def refazer(lista):
     if not historico_redo:
         print("Nada para refazer.")
@@ -33,12 +68,14 @@ def refazer(lista):
     lista.extend(estado_refeito)
     print("Ação refeita.")
 
+
 def validar_data(data_str):
     try:
         datetime.strptime(data_str, "%Y-%m-%d")
         return True
     except ValueError:
         return False
+
 
 def solicitar_data():
     while True:
@@ -48,15 +85,23 @@ def solicitar_data():
         else:
             print("Data inválida. Tente novamente no formato AAAA-MM-DD.")
 
-def adicionar(lista, descricao, vencimento):
+
+def adicionar(lista, descricao, vencimento, categoria="", tags=None):
     salvar_estado(lista)
+    if tags is None:
+        tags = []
     tarefa = {
         "descricao": descricao,
         "vencimento": vencimento,
-        "concluida": False
+        "concluida": False,
+        "categoria": categoria,
+        "tags": tags,
     }
     lista.append(tarefa)
-    print(f"Tarefa '{descricao}' adicionada.")
+    print(
+        f"Tarefa '{descricao}' adicionada na categoria '{categoria}' com tags {tags}."
+    )
+
 
 def remover(lista, indice):
     try:
@@ -66,13 +111,28 @@ def remover(lista, indice):
     except IndexError:
         print("Este número de tarefa não existe.")
 
+
 def mostrar(lista):
     if not lista:
         print("\nNenhuma tarefa encontrada.")
         return
     for i, t in enumerate(lista, start=1):
         status = "✓" if t["concluida"] else "✗"
-        print(f"{i} - {t['descricao']} | Vencimento: {t['vencimento']} | Concluída: {status}")
+        tags = ", ".join(t["tags"]) if t["tags"] else "-"
+        print(
+            f"{i} - {t['descricao']} | Vencimento: {t['vencimento']} | Concluída: {status} | Categoria: {t['categoria']} | Tags: {tags}"
+        )
+
+
+def filtrar_por_categoria(lista, categoria):
+    filtradas = [t for t in lista if t["categoria"].lower() == categoria.lower()]
+    mostrar(filtradas)
+
+
+def filtrar_por_tag(lista, tag):
+    filtradas = [t for t in lista if tag.lower() in [tg.lower() for tg in t["tags"]]]
+    mostrar(filtradas)
+
 
 def concluir(lista, indice):
     try:
@@ -82,24 +142,30 @@ def concluir(lista, indice):
     except IndexError:
         print("Este número de tarefa não existe.")
 
+
 def remover_concluidos(lista):
     salvar_estado(lista)
     lista[:] = [tarefa for tarefa in lista if not tarefa["concluida"]]
     print("Tarefas concluídas removidas.")
 
-def editar(lista, indice, descricao, vencimento):
+
+def editar(lista, indice, descricao, vencimento, categoria="", tags=None):
     try:
         salvar_estado(lista)
         lista[indice]["descricao"] = descricao
         lista[indice]["vencimento"] = vencimento
+        lista[indice]["categoria"] = categoria
+        lista[indice]["tags"] = tags if tags is not None else []
         print("Tarefa editada.")
     except IndexError:
         print("Este número de tarefa não existe.")
+
 
 def ordenar_por_nome(lista):
     salvar_estado(lista)
     lista.sort(key=lambda t: t["descricao"].lower())
     print("Tarefas ordenadas por nome.")
+
 
 def ordenar_por_data(lista):
     try:
@@ -108,6 +174,7 @@ def ordenar_por_data(lista):
         print("Tarefas ordenadas por data.")
     except ValueError:
         print("Erro: formato de data inválido em alguma tarefa. Use AAAA-MM-DD.")
+
 
 def qtd(lista):
     total = len(lista)
@@ -118,13 +185,16 @@ def qtd(lista):
     else:
         print(f"\nA lista possui {total} tarefas.")
 
+
 def tconcluidas(lista):
     concluidas = [t for t in lista if t["concluida"]]
     mostrar(concluidas)
 
+
 def tpendentes(lista):
     pendentes = [t for t in lista if not t["concluida"]]
     mostrar(pendentes)
+
 
 def salvararq(lista, nome="listadetarefas.json"):
     try:
@@ -133,6 +203,7 @@ def salvararq(lista, nome="listadetarefas.json"):
         print("Arquivo JSON salvo com sucesso.")
     except Exception as e:
         print(f"Erro ao salvar arquivo: {e}")
+
 
 def carregararq(lista, nome="listadetarefas.json"):
     try:
@@ -148,22 +219,35 @@ def carregararq(lista, nome="listadetarefas.json"):
     except Exception as e:
         print(f"Ocorreu um erro inesperado: {e}")
 
+
 def tarefas_vencidas(lista):
     hoje = datetime.now().date()
-    vencidas = [t for t in lista if not t["concluida"] and datetime.strptime(t["vencimento"], "%Y-%m-%d").date() < hoje]
+    vencidas = [
+        t
+        for t in lista
+        if not t["concluida"]
+        and datetime.strptime(t["vencimento"], "%Y-%m-%d").date() < hoje
+    ]
     mostrar(vencidas)
+
 
 def tarefas_proximas(lista, dias=3):
     hoje = datetime.now().date()
     proximas = [
-        t for t in lista
-        if not t["concluida"] and hoje <= datetime.strptime(t["vencimento"], "%Y-%m-%d").date() <= hoje + timedelta(days=dias)
+        t
+        for t in lista
+        if not t["concluida"]
+        and hoje
+        <= datetime.strptime(t["vencimento"], "%Y-%m-%d").date()
+        <= hoje + timedelta(days=dias)
     ]
     mostrar(proximas)
+
 
 # -------------------------------
 # Menus
 # -------------------------------
+
 
 def menu_principal():
     print("\nMenu Principal:")
@@ -175,6 +259,7 @@ def menu_principal():
     print("6 - Refazer")
     print("7 - Encerrar")
 
+
 def menu_gerenciar():
     print("\nGerenciar Tarefas:")
     print("1 - Adicionar")
@@ -182,6 +267,7 @@ def menu_gerenciar():
     print("3 - Editar")
     print("4 - Marcar como concluído")
     print("5 - Remover concluídas")
+
 
 def menu_exibir():
     print("\nExibir Tarefas:")
@@ -191,20 +277,30 @@ def menu_exibir():
     print("4 - Contar tarefas")
     print("5 - Vencidas")
     print("6 - Próximas (até 3 dias)")
+    print("7 - Filtrar por categoria")
+    print("8 - Filtrar por tag")
+    print("9 - Filtrar por categoria + tag")
+    print("10 - Listar categorias existentes")
+    print("11 - Listar tags existentes")
+
 
 def menu_organizar():
     print("\nOrganizar Tarefas:")
     print("1 - Ordenar alfabeticamente")
     print("2 - Ordenar por data de entrega")
+    print("3 - Ordenar por categoria")
+
 
 def menu_arquivo():
     print("\nArquivo:")
     print("1 - Salvar")
     print("2 - Carregar")
 
+
 # -------------------------------
 # Programa Principal
 # -------------------------------
+
 
 def obter_opcao(mensagem, max_op):
     try:
@@ -217,6 +313,7 @@ def obter_opcao(mensagem, max_op):
     except ValueError:
         print("Digite um número válido.")
         return None
+
 
 def main():
     lista = []
@@ -235,9 +332,19 @@ def main():
             if subop == 1:
                 tarefa = input("Tarefa que deseja adicionar: ")
                 vencimento = solicitar_data()
-                adicionar(lista, tarefa, vencimento)
+                categoria = input("Categoria da tarefa (opcional): ")
+                tags = (
+                    input("Tags separadas por vírgula (opcional): ").split(",")
+                    if input("Deseja adicionar tags? (s/n): ").lower() == "s"
+                    else []
+                )
+                adicionar(
+                    lista, tarefa, vencimento, categoria, [t.strip() for t in tags]
+                )
             elif subop == 2:
-                indice = obter_opcao("Índice da tarefa que deseja remover: ", len(lista))
+                indice = obter_opcao(
+                    "Índice da tarefa que deseja remover: ", len(lista)
+                )
                 if indice:
                     remover(lista, indice - 1)
             elif subop == 3:  # Editar
@@ -246,11 +353,24 @@ def main():
                     novadescricao = input("Nova descrição da tarefa: ")
                     novavencimento = input("Nova data de vencimento (AAAA-MM-DD): ")
                     if validar_data(novavencimento):
-                        editar(lista, indice - 1, novadescricao, novavencimento)
+                        novacategoria = input("Nova categoria (opcional): ")
+                        novatags = input(
+                            "Novas tags separadas por vírgula (opcional): "
+                        ).split(",")
+                        editar(
+                            lista,
+                            indice - 1,
+                            novadescricao,
+                            novavencimento,
+                            novacategoria,
+                            [t.strip() for t in novatags],
+                        )
                     else:
                         print("Data inválida. Use o formato AAAA-MM-DD.")
             elif subop == 4:
-                indice = obter_opcao("Índice da tarefa que deseja concluir: ", len(lista))
+                indice = obter_opcao(
+                    "Índice da tarefa que deseja concluir: ", len(lista)
+                )
                 if indice:
                     concluir(lista, indice - 1)
             elif subop == 5:
@@ -273,14 +393,30 @@ def main():
                 tarefas_vencidas(lista)
             elif subop == 6:
                 tarefas_proximas(lista)
+            elif subop == 7:
+                categoria = input("Digite a categoria: ")
+                filtrar_por_categoria(lista, categoria)
+            elif subop == 8:
+                tag = input("Digite a tag: ")
+                filtrar_por_tag(lista, tag)
+            elif subop == 9:
+                categoria = input("Digite a categoria: ")
+                tag = input("Digite a tag: ")
+                filtrar_categoria_tag(lista, categoria, tag)
+            elif subop == 10:
+                listar_categorias(lista)
+            elif subop == 11:
+                listar_tags(lista)
 
         elif op == 3:
             menu_organizar()
-            subop = obter_opcao("Escolha a opção: ", 2)
+            subop = obter_opcao("Escolha a opção: ", 3)
             if subop == 1:
                 ordenar_por_nome(lista)
             elif subop == 2:
                 ordenar_por_data(lista)
+            elif subop == 3:
+                ordenar_por_categoria(lista)
 
         elif op == 4:
             menu_arquivo()
@@ -296,6 +432,7 @@ def main():
         elif op == 7:
             print("Encerrando programa... Até logo!")
             break
+
 
 if __name__ == "__main__":
     main()
