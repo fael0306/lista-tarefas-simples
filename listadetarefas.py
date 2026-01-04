@@ -112,16 +112,29 @@ def remover(lista, indice):
         print("Este número de tarefa não existe.")
 
 
-def mostrar(lista):
+def mostrar(lista, por_pagina=10):
     if not lista:
         print("\nNenhuma tarefa encontrada.")
         return
-    for i, t in enumerate(lista, start=1):
-        status = "✓" if t["concluida"] else "✗"
-        tags = ", ".join(t["tags"]) if t["tags"] else "-"
-        print(
-            f"{i} - {t['descricao']} | Vencimento: {t['vencimento']} | Concluída: {status} | Categoria: {t['categoria']} | Tags: {tags}"
-        )
+
+    total = len(lista)
+    inicio = 0
+
+    while inicio < total:
+        fim = min(inicio + por_pagina, total)
+        for i, t in enumerate(lista[inicio:fim], start=inicio + 1):
+            status = "✓" if t["concluida"] else "✗"
+            tags = ", ".join(t["tags"]) if t["tags"] else "-"
+            print(
+                f"{i} - {t['descricao']} | Vencimento: {t['vencimento']} | "
+                f"Concluída: {status} | Categoria: {t['categoria']} | Tags: {tags}"
+            )
+
+        inicio = fim
+        if inicio < total:
+            cont = input("\nMostrar mais tarefas? (s/n): ").lower()
+            if cont != "s":
+                break
 
 
 def filtrar_por_categoria(lista, categoria):
